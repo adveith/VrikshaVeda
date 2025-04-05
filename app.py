@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 
 # Load the pre-trained model from TensorFlow Hub
-model_url = "https://tfhub.dev/google/inaturalist/efficientnetv2-l/feature-vector/2"
+model_url = "https://tfhub.dev/google/imagenet/inception_v3/feature_vector/4"
 model = hub.KerasLayer(model_url)
 
 # Folder to save uploaded images
