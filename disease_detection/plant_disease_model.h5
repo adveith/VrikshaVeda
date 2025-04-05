@@ -1,0 +1,70 @@
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.applications import MobileNetV2
+from tensorflow.keras.optimizers import Adam
+
+# Define dataset directories
+train_dir = 'path_to_train_data'  # Path to your training dataset
+valid_dir = 'path_to_valid_data'  # Path to your validation dataset
+
+# Image data generators for training and validation datasets
+train_datagen = ImageDataGenerator(
+    rescale=1./255,  # Normalize images to [0,1] range
+    rotation_range=30,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode='nearest'
+)
+
+valid_datagen = ImageDataGenerator(rescale=1./255)
+
+train_data = train_datagen.flow_from_directory(
+    train_dir,
+    target_size=(224, 224),
+    batch_size=32,
+    class_mode='categorical'
+)
+
+valid_data = valid_datagen.flow_from_directory(
+    valid_dir,
+    target_size=(224, 224),
+    batch_size=32,
+    class_mode='categorical'
+)
+
+# Load the pre-trained MobileNetV2 model, excluding the top layer
+base_model = MobileNetV2(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+
+# Freeze the layers of the base model to retain pre-trained weights
+for layer in base_model.layers:
+    layer.trainable = False
+
+# Create the custom model by adding a classification head
+model = Sequential([
+    base_model,
+    GlobalAveragePooling2D(),
+    Dense(1024, activation='relu'),
+    Dense(train_data.num_classes, activation='softmax')  # Adjust to the number of disease categories
+])
+
+# Compile the model
+model.compile(optimizer=Adam(), loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Train the model
+history = model.fit(
+    train_data,
+    steps_per_epoch=train_data.samples // train_data.batch_size,
+    epochs=10,
+    validation_data=valid_data,
+    validation_steps=valid_data.samples // valid_data.batch_size
+)
+
+# Save the trained model
+model.save('model/plant_disease_model.h5')
+
+print("Model training complete and saved as 'plant_disease_model.h5'")

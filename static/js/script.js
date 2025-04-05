@@ -34,6 +34,9 @@ function previewImage(event) {
         imgElement.style.borderRadius = '10px';
         previewContainer.innerHTML = '';
         previewContainer.appendChild(imgElement);
+        
+        // Once image is uploaded, trigger AI prediction and update charts
+        setTimeout(getAIPrediction, 1000); // simulate delay for AI prediction
     };
     
     if (file) {
@@ -56,6 +59,9 @@ function handleDrop(event) {
             imgElement.style.borderRadius = '10px';
             previewContainer.innerHTML = '';
             previewContainer.appendChild(imgElement);
+            
+            // Once image is uploaded, trigger AI prediction and update charts
+            setTimeout(getAIPrediction, 1000); // simulate delay for AI prediction
         };
         
         reader.readAsDataURL(file);
@@ -75,21 +81,52 @@ function handleDragLeave(event) {
 document.getElementById('imagePreview').addEventListener('dragover', handleDragOver);
 document.getElementById('imagePreview').addEventListener('dragleave', handleDragLeave);
 
-// Mocked AI prediction logic
+// Mocked AI prediction logic (replace this with actual AI model later)
 function getAIPrediction() {
+    // Simulating prediction changes based on AI
     const predictions = ['Healthy', 'Moderate', 'Diseased'];
     const prediction = predictions[Math.floor(Math.random() * predictions.length)];
     const aiPredictionBox = document.getElementById('aiPredictionBox');
     aiPredictionBox.innerHTML = `AI predicts: <strong>${prediction}</strong>`;
+
+    // Update mock data based on AI prediction
+    updateChartData(prediction);
+}
+
+// Function to update the chart data based on AI prediction
+function updateChartData(prediction) {
+    let moisture, nutrients, disease;
+    // Initial values are set to 0
+    moisture = 0;
+    nutrients = 0;
+    disease = 0;
+    
+    // Change values based on AI prediction
+    if (prediction === 'Healthy') {
+        moisture = 90;
+        nutrients = 85;
+        disease = 5;
+    } else if (prediction === 'Moderate') {
+        moisture = 75;
+        nutrients = 70;
+        disease = 25;
+    } else {
+        moisture = 50;
+        nutrients = 40;
+        disease = 60;
+    }
+    
+    // Update the charts with new data
+    generateMockData(moisture, nutrients, disease);
 }
 
 // Generate Mock Data for Charts
-function generateMockData() {
+function generateMockData(moisture, nutrients, disease) {
     const barChartData = {
         labels: ['Moisture', 'Nutrients', 'Disease'],
         datasets: [{
             label: 'Health Parameters',
-            data: [80, 70, 30], // Mock data values
+            data: [moisture, nutrients, disease],
             backgroundColor: ['#81c784', '#66bb6a', '#ff7043'],
             borderColor: ['#388e3c', '#388e3c', '#d32f2f'],
             borderWidth: 1
@@ -100,7 +137,7 @@ function generateMockData() {
         labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
         datasets: [{
             label: 'Moisture',
-            data: [80, 75, 78, 82, 80],
+            data: [moisture, moisture - 5, moisture - 2, moisture + 2, moisture],
             fill: false,
             borderColor: '#388e3c',
             tension: 0.1
@@ -111,7 +148,7 @@ function generateMockData() {
         labels: ['Moisture', 'Nutrients', 'Disease'],
         datasets: [{
             label: 'Health Overview',
-            data: [80, 70, 30],
+            data: [moisture, nutrients, disease],
             backgroundColor: 'rgba(129, 199, 132, 0.2)',
             borderColor: '#388e3c',
             borderWidth: 1
@@ -145,11 +182,8 @@ function renderCharts(barChartData, lineChartData, radarChartData) {
 
 // Initialize the page
 window.addEventListener('load', function() {
-    // Generate charts on page load
-    generateMockData();
-    
-    // Generate AI prediction after a short delay
-    setTimeout(getAIPrediction, 2000);
+    // Generate initial charts with mock data (all values are 0)
+    generateMockData(0, 0, 0);
 });
 
 // Function to add a new log entry
@@ -168,8 +202,8 @@ function addLogEntry(date, moisture, nutrients, disease) {
 }
 
 // Example: Add a log entry (you can automate this with real-time data)
-addLogEntry('2025-04-06', 85, 72, 25);
-addLogEntry('2025-04-07', 90, 80, 20);
+addLogEntry('2025-04-06', 0, 0, 0); // All values are 0 initially
+addLogEntry('2025-04-07', 0, 0, 0); // All values are 0 initially
 
 // Handle the submission of new log entries via form
 document.getElementById('logForm').addEventListener('submit', function(e) {
