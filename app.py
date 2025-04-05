@@ -28,9 +28,22 @@ def predict_disease(image_path):
     prediction = model(image)
     return prediction
 
+# Routes for serving the HTML pages
 @app.route('/')
 def index():
+    return render_template('landpage.html')
+
+@app.route('/page1')
+def page1():
     return render_template('index.html')
+
+@app.route('/page2')
+def page2():
+    return render_template('chatbot.html')
+
+@app.route('/page3')
+def page3():
+    return render_template('allproducts.html')
 
 # Handle image upload and prediction
 @app.route('/predict', methods=['POST'])
