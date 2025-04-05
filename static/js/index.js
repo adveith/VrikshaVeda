@@ -16,38 +16,17 @@ window.addEventListener('load', function() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.body.classList.add('dark-theme');
+        document.getElementById('themeIcon').innerText = '🌙'; // Change icon to moon
     } else {
         document.body.classList.remove('dark-theme');
+        document.getElementById('themeIcon').innerText = '🌞'; // Change icon to sun
     }
 });
 
 // Function to handle image upload and preview
 function previewImage(event) {
     const file = event.target.files[0];
-    const reader = new FileReader();
     
-    reader.onload = function() {
-        const previewContainer = document.getElementById('imagePreview');
-        const imgElement = document.createElement('img');
-        imgElement.src = reader.result;
-        imgElement.style.width = '100%';
-        imgElement.style.borderRadius = '10px';
-        previewContainer.innerHTML = '';
-        previewContainer.appendChild(imgElement);
-        
-        // Once image is uploaded, trigger AI prediction and update charts
-        setTimeout(getAIPrediction, 1000); // simulate delay for AI prediction
-    };
-    
-    if (file) {
-        reader.readAsDataURL(file);
-    }
-}
-
-// Function to handle drag-and-drop for file upload
-function handleDrop(event) {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) {
         const reader = new FileReader();
         
@@ -65,6 +44,35 @@ function handleDrop(event) {
         };
         
         reader.readAsDataURL(file);
+    } else {
+        alert("Please upload a valid image file.");
+    }
+}
+
+// Function to handle drag-and-drop for file upload
+function handleDrop(event) {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        
+        reader.onload = function() {
+            const previewContainer = document.getElementById('imagePreview');
+            const imgElement = document.createElement('img');
+            imgElement.src = reader.result;
+            imgElement.style.width = '100%';
+            imgElement.style.borderRadius = '10px';
+            previewContainer.innerHTML = '';
+            previewContainer.appendChild(imgElement);
+            
+            // Once image is uploaded, trigger AI prediction and update charts
+            setTimeout(getAIPrediction, 1000); // simulate delay for AI prediction
+        };
+        
+        reader.readAsDataURL(file);
+    } else {
+        alert("Please upload a valid image file.");
     }
 }
 
@@ -208,10 +216,18 @@ addLogEntry('2025-04-07', 0, 0, 0); // All values are 0 initially
 // Handle the submission of new log entries via form
 document.getElementById('logForm').addEventListener('submit', function(e) {
     e.preventDefault();
+    
     const date = document.getElementById('logDate').value;
     const moisture = document.getElementById('logMoisture').value;
     const nutrients = document.getElementById('logNutrients').value;
     const disease = document.getElementById('logDisease').value;
+    
+    // Validate form values before adding log entry
+    if (moisture < 0 || moisture > 100 || nutrients < 0 || nutrients > 100 || disease < 0 || disease > 100) {
+        alert("Please enter valid values (0-100%) for moisture, nutrients, and disease.");
+        return;
+    }
+    
     addLogEntry(date, moisture, nutrients, disease);
 });
 
@@ -228,3 +244,181 @@ function generateQRCode(diseaseInfo) {
 setTimeout(function() {
     generateQRCode("Disease detected: X, Treatment: Y");
 }, 3000);
+function toggleTheme() {
+    document.body.classList.toggle('dark-theme');
+    if (document.body.classList.contains('dark-theme')) {
+        localStorage.setItem('theme', 'dark');
+    } else {
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+// Check if a theme is saved and apply it on load
+window.addEventListener('load', function () {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+    }
+});
+
+// Handle image upload preview
+function previewImage(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    
+    reader.onload = function () {
+        const previewContainer = document.getElementById('imagePreview');
+        const imgElement = document.createElement('img');
+        imgElement.src = reader.result;
+        imgElement.style.width = '100%';
+        imgElement.style.borderRadius = '10px';
+        previewContainer.innerHTML = '';
+        previewContainer.appendChild(imgElement);
+
+        // AI Prediction based on image
+        getAIPrediction();
+    };
+    
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+}
+
+// Handle drag and drop functionality
+function handleDrop(event) {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        
+        reader.onload = function () {
+            const previewContainer = document.getElementById('imagePreview');
+            const imgElement = document.createElement('img');
+            imgElement.src = reader.result;
+            imgElement.style.width = '100%';
+            imgElement.style.borderRadius = '10px';
+            previewContainer.innerHTML = '';
+            previewContainer.appendChild(imgElement);
+            
+            // AI Prediction based on image
+            getAIPrediction();
+        };
+        
+        reader.readAsDataURL(file);
+    }
+}
+
+// Add drag-over and drag-leave event listeners for better UX
+function handleDragOver(event) {
+    event.preventDefault();
+    document.getElementById('imagePreview').style.background = '#f0f0f0';
+}
+
+function handleDragLeave(event) {
+    document.getElementById('imagePreview').style.background = '';
+}
+
+document.getElementById('imagePreview').addEventListener('dragover', handleDragOver);
+document.getElementById('imagePreview').addEventListener('dragleave', handleDragLeave);
+
+// Mock AI prediction logic
+function getAIPrediction() {
+    const predictions = ['Healthy', 'Moderate', 'Diseased'];
+    const prediction = predictions[Math.floor(Math.random() * predictions.length)];
+    const aiPredictionBox = document.getElementById('aiPredictionBox');
+    aiPredictionBox.innerHTML = `AI predicts: <strong>${prediction}</strong>`;
+}
+
+// Generate Mock Data for Charts
+function generateMockData() {
+    const barChartData = {
+        labels: ['Moisture', 'Nutrients', 'Disease'],
+        datasets: [{
+            label: 'Health Parameters',
+            data: [80, 70, 30],
+            backgroundColor: ['#81c784', '#66bb6a', '#ff7043'],
+            borderColor: ['#388e3c', '#388e3c', '#d32f2f'],
+            borderWidth: 1
+        }]
+    };
+
+    const lineChartData = {
+        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
+        datasets: [{
+            label: 'Moisture',
+            data: [80, 75, 78, 82, 80],
+            fill: false,
+            borderColor: '#388e3c',
+            tension: 0.1
+        }]
+    };
+
+    const radarChartData = {
+        labels: ['Moisture', 'Nutrients', 'Disease'],
+        datasets: [{
+            label: 'Health Overview',
+            data: [80, 70, 30],
+            backgroundColor: 'rgba(129, 199, 132, 0.2)',
+            borderColor: '#388e3c',
+            borderWidth: 1
+        }]
+    };
+
+    // Render charts
+    renderCharts(barChartData, lineChartData, radarChartData);
+}
+
+// Function to render charts
+function renderCharts(barChartData, lineChartData, radarChartData) {
+    const barChartCtx = document.getElementById('barChart').getContext('2d');
+    new Chart(barChartCtx, {
+        type: 'bar',
+        data: barChartData
+    });
+
+    const lineChartCtx = document.getElementById('lineChart').getContext('2d');
+    new Chart(lineChartCtx, {
+        type: 'line',
+        data: lineChartData
+    });
+
+    const radarChartCtx = document.getElementById('radarChart').getContext('2d');
+    new Chart(radarChartCtx, {
+        type: 'radar',
+        data: radarChartData
+    });
+}
+
+// Initialize the page
+window.addEventListener('load', function () {
+    // Generate charts on page load
+    generateMockData();
+
+    // Generate AI prediction after a short delay
+    setTimeout(getAIPrediction, 2000);
+});
+
+// Handle the submission of new log entries via form
+document.getElementById('logForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const date = document.getElementById('logDate').value;
+    const moisture = document.getElementById('logMoisture').value;
+    const nutrients = document.getElementById('logNutrients').value;
+    const disease = document.getElementById('logDisease').value;
+    addLogEntry(date, moisture, nutrients, disease);
+});
+
+// Add a new log entry
+function addLogEntry(date, moisture, nutrients, disease) {
+    const logTableBody = document.getElementById('logTableBody');
+    const newRow = document.createElement('tr');
+    
+    newRow.innerHTML = ` p
+        <td>${date}</td>
+        <td>${moisture}%</td>
+        <td>${nutrients}%</td>
+        <td>${disease}%</td>
+    `;
+    
+    logTableBody.appendChild(newRow);
+}
