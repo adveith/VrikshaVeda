@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -154,18 +153,34 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.text())
+            .then(response => response.json())
             .then(result => {
-                document.getElementById('aiPredictionBox').innerText = result;
+                document.getElementById('aiPredictionBox').innerText = "Predicted Disease: " + result.prediction;
             })
             .catch(error => {
                 console.error('Error:', error);
             });
         }
 
-        // Trigger the file upload when the user selects a file
-        document.getElementById('imageUpload').addEventListener('change', uploadFile);
+        // Handle drag-and-drop
+        function handleDrop(event) {
+            event.preventDefault();
+            var files = event.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('imageUpload').files = files;
+                previewImage(event);
+            }
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            document.getElementById('dropzone').classList.add('active');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            document.getElementById('dropzone').classList.remove('active');
+        }
     </script>
 </body>
-
 </html>
