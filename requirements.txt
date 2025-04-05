@@ -32,7 +32,7 @@ qrcode==7.4.2
 # 🔊 Voice Support (Optional)
 SpeechRecognition==3.10.0
 gTTS==2.3.2
-PyAudio==0.2.11
+PyAudio
 
 # 🌐 Translation / Multilingual Support
 googletrans==4.0.0rc1

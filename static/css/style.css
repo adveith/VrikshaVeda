@@ -1,13 +1,256 @@
+/* Global Styles */
 body {
-    background-color: #f5fff5;
-    font-family: 'Segoe UI', sans-serif;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease-in-out;
+}
+
+body.dark {
+  background-color: #121212;
+  color: #fff;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Styles */
+.section {
+  margin-bottom: 30px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#themeToggle {
+  background-color: transparent;
+  border: 2px solid #4caf50;
+  color: #4caf50;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Upload Zone */
+#uploadZone {
+  width: 100%;
+  height: 200px;
+  border: 2px dashed #4caf50;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: #e8f5e9;
+  font-size: 16px;
+  color: #4caf50;
+  position: relative;
+  transition: background-color 0.3s ease-in-out;
+}
+
+#uploadZone.drag-over {
+  background-color: #c8e6c9;
+}
+
+/* File Input */
+#fileInput {
+  display: none;
+}
+
+.upload-btn {
+  margin-top: 20px;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.upload-btn:hover {
+  background-color: #45a049;
+}
+
+/* Charts */
+.chart-container {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.chart {
+  width: 45%;
+  height: 300px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#leaf3d {
+  width: 100%;
+  height: 300px;
+  border-radius: 10px;
+  margin-top: 30px;
+}
+
+/* AI Prediction */
+.ai-prediction {
+  background-color: #ffeb3b;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.ai-prediction span {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Parameter Cards */
+.parameter-cards {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.parameter-card {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 30%;
+  transition: transform 0.3s ease-in-out;
+}
+
+.parameter-card:hover {
+  transform: scale(1.05);
+}
+
+.parameter-card h3 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #4caf50;
+}
+
+.parameter-card .value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+/* Data Table */
+.table-container {
+  margin-top: 30px;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #f2f2f2;
+}
+
+.table td {
+  background-color: #fafafa;
+}
+
+.table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
   }
-  
-  h1 {
-    color: #228B22;
+  100% {
+    opacity: 1;
   }
-  
-  footer {
-    margin-top: 50px;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
   }
-  
+
+  .chart-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .parameter-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .parameter-card {
+    width: 80%;
+    margin-bottom: 15px;
+  }
+
+  #themeToggle {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  #uploadZone {
+    height: 150px;
+  }
+
+  #leaf3d {
+    height: 250px;
+  }
+}

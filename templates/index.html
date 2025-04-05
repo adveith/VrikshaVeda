@@ -1,48 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Vriksha Veda</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="/static/css/style.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leaf Health Analyzer</title>
+  <link rel="stylesheet" href="../static/css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
 </head>
+
 <body>
-  <div class="container mt-5">
-    <h1 class="text-center mb-4">🌿 Vriksha Veda 🌾</h1>
-    <h5 class="text-center text-muted">Fasal ki Raksha, Vigyan ke Saath</h5>
+  <div class="container">
+    <header>
+      <h1>🌿 Leaf Health Analyzer</h1>
+      <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+    </header>
 
-    <form action="/predict" method="POST" enctype="multipart/form-data" class="mt-4">
-      <div class="mb-3">
-        <label for="imageUpload" class="form-label">Upload Plant Leaf Image:</label>
-        <input class="form-control" type="file" name="image" id="imageUpload" required>
+    <section class="upload-section" ondrop="handleDrop(event)" ondragover="event.preventDefault()">
+      <h2>Upload a Leaf Image</h2>
+      <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(event)" />
+      <div id="dropzone">Drag & Drop Here</div>
+    </section>
+
+    <section class="viewer-section">
+      <h2>🌀 3D Leaf Viewer</h2>
+      <div id="leaf3d"></div>
+    </section>
+
+    <section class="dashboard">
+      <h2>📊 Health Dashboard</h2>
+      <canvas id="barChart"></canvas>
+      <canvas id="lineChart"></canvas>
+      <canvas id="radarChart"></canvas>
+    </section>
+
+    <section class="ai-prediction">
+      <h2>🧠 AI Prediction</h2>
+      <div class="prediction-box" id="aiPredictionBox">
+        <p>AI predicts: <strong>Loading...</strong></p>
       </div>
-      <button class="btn btn-success" type="submit">Detect Disease</button>
-    </form>
+    </section>
 
-    <hr class="my-5">
-
-    <h4>🌱 Ask Vriksha Chatbot</h4>
-    <form action="/chat" method="POST" class="mb-3">
-      <textarea class="form-control mb-2" name="user_query" rows="3" placeholder="Ask about diseases, cures, yield, weather..."></textarea>
-      <button class="btn btn-primary" type="submit">Ask Chatbot</button>
-    </form>
-
-    {% if response %}
-      <div class="alert alert-info mt-2">
-        <strong>Bot:</strong> {{ response }}
+    <section class="comparison-cards">
+      <h2>📋 Parameter Comparison</h2>
+      <div class="card-grid">
+        <div class="param-card">Moisture: 80% <br> Ideal: 85%</div>
+        <div class="param-card">Nutrients: 70% <br> Ideal: 90%</div>
+        <div class="param-card">Disease Likelihood: 30%</div>
       </div>
-    {% endif %}
+    </section>
 
-    <div class="mt-4">
-      <a href="/weather" class="btn btn-outline-info">Weather</a>
-      <a href="/yield" class="btn btn-outline-warning">Yield Predictor</a>
-      <a href="/allproducts" class="btn btn-outline-secondary">All Reports</a>
-    </div>
+    <section class="data-log">
+      <h2>🧾 Data Log</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Moisture</th>
+            <th>Nutrients</th>
+            <th>Disease%</th>
+          </tr>
+        </thead>
+        <tbody id="logTableBody">
+          <tr>
+            <td>2025-04-05</td>
+            <td>80%</td>
+            <td>70%</td>
+            <td>30%</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
   </div>
 
-  <footer class="text-center mt-5 text-muted">
-    <p>🌱 Vriksha Veda - Built with Science for Farmers 🇮🇳</p>
-  </footer>
+  <script src="../static/js/script.js"></script>
 </body>
+
 </html>
