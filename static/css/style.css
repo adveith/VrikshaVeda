@@ -346,4 +346,21 @@ body.dark-theme .param-card p {
     flex-direction: column;
     gap: 20px;
   }
+
+  .param-card {
+    padding: 20px;
+    font-size: 0.9rem;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
 }
