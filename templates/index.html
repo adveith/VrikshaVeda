@@ -49,7 +49,7 @@
             <section id="section2">
                 <h2>3D Leaf Viewer</h2>
                 <div class="viewer-section">
-                    <div id="leaf3d"></div>
+                    <div id="leaf3d" style="width: 400px; height: 300px;"></div>
                 </div>
             </section>
 
@@ -58,6 +58,11 @@
                 <h2>AI Prediction</h2>
                 <div class="ai-prediction">
                     <p>AI Prediction Result: <span id="aiPredictionBox">Data based on model analysis...</span></p>
+                    <div id="aiSuggestionsBox">
+                        <h3>AI Suggestions</h3>
+                        <p>Suggested Products: <span id="productSuggestion"></span></p>
+                        <p>Suggested Quantity of Medicines: <span id="medicineQuantity"></span></p>
+                    </div>
                 </div>
             </section>
 
@@ -77,15 +82,15 @@
                         <tbody id="logTableBody">
                             <tr>
                                 <td>2025-04-06</td>
-                                <td>85%</td>
-                                <td>72%</td>
-                                <td>25%</td>
+                                <td>0%</td>
+                                <td>0%</td>
+                                <td>0%</td>
                             </tr>
                             <tr>
                                 <td>2025-04-07</td>
-                                <td>90%</td>
-                                <td>80%</td>
-                                <td>20%</td>
+                                <td>0%</td>
+                                <td>0%</td>
+                                <td>0%</td>
                             </tr>
                         </tbody>
                     </table>
@@ -105,15 +110,15 @@
                 <div class="comparison-cards">
                     <div class="param-card">
                         <strong>Growth Rate</strong>
-                        <p>85%</p>
+                        <p>0%</p>
                     </div>
                     <div class="param-card">
                         <strong>Leaf Width</strong>
-                        <p>15 cm</p>
+                        <p>0 cm</p>
                     </div>
                     <div class="param-card">
                         <strong>Sunlight Exposure</strong>
-                        <p>High</p>
+                        <p>None</p>
                     </div>
                 </div>
             </section>
@@ -133,64 +138,169 @@
     <script src="../static/js/script.js"></script>
 
     <script>
-      
-    // Handle image preview after selecting a file
-    function previewImage(event) {
-        var reader = new FileReader();
-        reader.onload = function () {
-            var output = document.getElementById('imagePreview');
-            output.innerHTML = '<img src="' + reader.result + '" width="300" height="300">';
-            // Trigger the file upload for prediction after image preview
-            uploadFile();
+        // Handle light/dark theme toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+        }
+
+        // Set initial values to 0
+        var moisture = 0;
+        var nutrients = 0;
+        var disease = 0;
+
+        // Handle image preview after selecting a file
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('imagePreview');
+                output.innerHTML = '<img src="' + reader.result + '" width="300" height="300">';
+                uploadFile();
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Handle the file upload and AI prediction result
+        function uploadFile() {
+            var file = document.getElementById('imageUpload').files[0];
+            if (!file) {
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append('file', file);
+
+            // Fake AI prediction response and randomize values
+            setTimeout(function() {
+                moisture = Math.floor(Math.random() * 101); // Randomized between 0 and 100
+                nutrients = Math.floor(Math.random() * 101);
+                disease = Math.floor(Math.random() * 101);
+
+                // Update AI Prediction Box
+                document.getElementById('aiPredictionBox').innerText = "Predicted Disease: " + (disease < 50 ? "Healthy" : "Diseased");
+
+                // Provide fake product recommendations based on the disease prediction
+                var suggestedProduct = disease < 50 ? "Plant Growth Enhancer" : "Fungicide";
+                var suggestedQuantity = disease < 50 ? "100 ml" : "200 ml";
+
+                document.getElementById('productSuggestion').innerText = suggestedProduct;
+                document.getElementById('medicineQuantity').innerText = suggestedQuantity;
+
+                // Update the charts and log table with random values
+                updateCharts();
+                updateLogTable();
+            }, 1000);
+        }
+
+        // Handle drag-and-drop
+        function handleDrop(event) {
+            event.preventDefault();
+            var files = event.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('imageUpload').files = files;
+                previewImage(event);
+            }
+        }
+
+        function handleDragOver(event) {
+            event.preventDefault();
+            document.getElementById('dropzone').classList.add('active');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            document.getElementById('dropzone').classList.remove('active');
+        }
+
+        // Update the charts with the new randomized values
+        function updateCharts() {
+            barChartData.datasets[0].data = [moisture, nutrients, disease];
+            lineChartData.datasets[0].data = [moisture, nutrients, disease];
+            radarChartData.datasets[0].data = [moisture, nutrients, disease];
+
+            // Update each chart
+            barChart.update();
+            lineChart.update();
+            radarChart.update();
+        }
+
+        // Update the log table with new values
+        function updateLogTable() {
+            var tableBody = document.getElementById('logTableBody');
+            var newRow = tableBody.insertRow(0);
+            newRow.innerHTML = `
+                <td>${new Date().toLocaleDateString()}</td>
+                <td>${moisture}%</td>
+                <td>${nutrients}%</td>
+                <td>${disease}%</td>
+            `;
+        }
+
+        // Fake chart data
+        var barChartData = {
+            labels: ['April 6', 'April 7', 'April 8'],
+            datasets: [{
+                label: 'Moisture',
+                data: [0, 0, 0],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
         };
-        reader.readAsDataURL(event.target.files[0]);
-    }
 
-    // Handle the file upload and AI prediction result
-    function uploadFile() {
-        var file = document.getElementById('imageUpload').files[0];
-        if (!file) {
-            return;
-        }
-        
-        var formData = new FormData();
-        formData.append('file', file);
+        var lineChartData = {
+            labels: ['April 6', 'April 7', 'April 8'],
+            datasets: [{
+                label: 'Nutrients',
+                data: [0, 0, 0],
+                fill: false,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                tension: 0.1
+            }]
+        };
 
-        fetch('/predict', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(result => {
-            // Update AI prediction result
-            document.getElementById('aiPredictionBox').innerText = "Predicted Disease: " + result.prediction;
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('aiPredictionBox').innerText = "Error in prediction.";
+        var radarChartData = {
+            labels: ['Moisture', 'Nutrients', 'Disease'],
+            datasets: [{
+                label: 'Parameter Comparison',
+                data: [0, 0, 0],
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderColor: 'rgba(153, 102, 255, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        // Chart creation
+        var barChart = new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: barChartData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
         });
-    }
 
-    // Handle drag-and-drop
-    function handleDrop(event) {
-        event.preventDefault();
-        var files = event.dataTransfer.files;
-        if (files.length > 0) {
-            document.getElementById('imageUpload').files = files;
-            previewImage(event);
-        }
-    }
+        var lineChart = new Chart(document.getElementById('lineChart'), {
+            type: 'line',
+            data: lineChartData,
+            options: {
+                responsive: true
+            }
+        });
 
-    function handleDragOver(event) {
-        event.preventDefault();
-        document.getElementById('dropzone').classList.add('active');
-    }
-
-    function handleDragLeave(event) {
-        event.preventDefault();
-        document.getElementById('dropzone').classList.remove('active');
-    }
-</script>
-
+        var radarChart = new Chart(document.getElementById('radarChart'), {
+            type: 'radar',
+            data: radarChartData,
+            options: {
+                scale: {
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
